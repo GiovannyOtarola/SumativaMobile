@@ -1,6 +1,5 @@
 package com.example.sumativamobile
 
-import android.media.Image
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,11 +26,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
-fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit){
+fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit, listaUsuarios: listaUsuarios){
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var loginError by remember { mutableStateOf<String?>(null) }
+
     Column (
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -67,19 +66,19 @@ fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit){
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Button(onClick = {
-                val user = UserManager.getUser(email, password)
-                if (user != null){
+                val users = listaUsuarios.getUserList()
+                val user = users.find { it.email == email && it.password == password }
+                if (user != null) {
                     loginError = null
-                    //Navega a la pantalla principal si inicio de sesion es exitoso
                     navController.navigate("principal")
-                }else{
-                    loginError = "Credenciales incorrectas. Intenta nuevamente"
+                } else {
+                    loginError = "Credenciales incorrectas. Intenta nuevamente."
                 }
             }) {
                 Text(text = "Iniciar Sesión")
             }
 
-            Button(onClick = {onNavigateToRegister()  }) {
+            Button(onClick = { onNavigateToRegister() }) {
                 Text(text = "Registrate")
             }
         }

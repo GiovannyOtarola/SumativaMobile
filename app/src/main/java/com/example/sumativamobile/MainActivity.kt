@@ -10,8 +10,12 @@ import androidx.navigation.compose.rememberNavController
 import com.example.sumativamobile.ui.theme.SumativaMobileTheme
 
 class MainActivity : ComponentActivity() {
+    private lateinit var listaUsuarios: listaUsuarios
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        listaUsuarios = listaUsuarios(this)
+
         setContent {
             SumativaMobileTheme {
                 // Configura el NavHostController para la navegación
@@ -22,7 +26,8 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             onNavigateToRegister = {
                                 navController.navigate("registro")
-                            }
+                            },
+                            listaUsuarios = listaUsuarios
                         )
                     }
                     composable("registro") {
@@ -30,7 +35,8 @@ class MainActivity : ComponentActivity() {
                             onRegistrationComplete = {
                                 // Navega de regreso a la pantalla de inicio de sesión
                                 navController.popBackStack()
-                            }
+                            },
+                            listaUsuarios = listaUsuarios
                         )
                     }
                     composable("principal") {
