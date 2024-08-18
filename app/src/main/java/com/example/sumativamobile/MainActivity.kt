@@ -9,6 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.sumativamobile.ui.theme.SumativaMobileTheme
 
+
+
 class MainActivity : ComponentActivity() {
     private lateinit var listaUsuarios: listaUsuarios
 
@@ -38,6 +40,9 @@ class MainActivity : ComponentActivity() {
                             },
                             listaUsuarios = listaUsuarios
                         )
+                    }
+                    composable("recuperar") {
+                        Recuperar(context = this@MainActivity)
                     }
                     composable("principal") {
                         Principal()

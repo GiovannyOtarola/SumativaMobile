@@ -90,7 +90,7 @@ fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit, 
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(onClick = { }) {
+        TextButton(onClick = {navController.navigate("recuperar") }) {
             Text(text = "Olvidaste tu Contraseña?")
         }
     }
