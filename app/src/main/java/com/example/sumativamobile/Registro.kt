@@ -1,4 +1,6 @@
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -6,10 +8,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.sumativamobile.R
 import com.example.sumativamobile.User
 import com.example.sumativamobile.listaUsuarios
 
@@ -27,13 +31,17 @@ fun RegistroScreen(onRegistrationComplete: () -> Unit, listaUsuarios: listaUsuar
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Registro", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+        Image(painter = painterResource(id = R.drawable.registro), contentDescription = "Registro image",
+            modifier = Modifier.size(150.dp))
+
+        Text(text = "Registro", fontSize = 40.sp, fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
+            shape = RoundedCornerShape(16.dp),
             label = { Text(text = "Dirección Email") }
         )
 
@@ -42,6 +50,7 @@ fun RegistroScreen(onRegistrationComplete: () -> Unit, listaUsuarios: listaUsuar
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
+            shape = RoundedCornerShape(16.dp),
             label = { Text(text = "Contraseña") },
             visualTransformation = PasswordVisualTransformation()
         )
@@ -51,6 +60,7 @@ fun RegistroScreen(onRegistrationComplete: () -> Unit, listaUsuarios: listaUsuar
         OutlinedTextField(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
+            shape = RoundedCornerShape(16.dp),
             label = { Text(text = "Confirmar Contraseña") },
             visualTransformation = PasswordVisualTransformation()
         )

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -51,13 +52,15 @@ fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit, 
         
         OutlinedTextField(value = email, onValueChange ={
             email = it
-        }, label ={ Text(text = "Dirección Email")} )
+        }, shape = RoundedCornerShape(16.dp),
+            label ={ Text(text = "Dirección Email")} )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(value = password, onValueChange ={
             password = it
-        }, label ={ Text(text = "Contraseña")}, visualTransformation = PasswordVisualTransformation())
+        }, shape = RoundedCornerShape(16.dp),
+            label ={ Text(text = "Contraseña")}, visualTransformation = PasswordVisualTransformation())
 
         Spacer(modifier = Modifier.height(32.dp))
 

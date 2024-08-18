@@ -26,7 +26,4 @@ class listaUsuarios(context: Context) {
         return gson.fromJson(json, type)
     }
 
-
-
-
 }

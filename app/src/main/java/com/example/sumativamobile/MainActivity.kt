@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
                         Recuperar(context = this@MainActivity)
                     }
                     composable("principal") {
-                        Principal()
+                        Principal(listaUsuarios = listaUsuarios)
                     }
                 }
             }
