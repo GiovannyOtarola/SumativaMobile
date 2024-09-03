@@ -25,6 +25,10 @@ fun RegistroScreen(onRegistrationComplete: () -> Unit, listaUsuarios: listaUsuar
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var registrationError by remember { mutableStateOf<String?>(null) }
+    var isEmailValid by remember { mutableStateOf(true) }
+
+    // Expresión  para validar formato de email + el dominio
+    val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$".toRegex()
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -40,16 +44,23 @@ fun RegistroScreen(onRegistrationComplete: () -> Unit, listaUsuarios: listaUsuar
 
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = {
+                email = it.replace(Regex("\\s"), "")// Evitar saltos de linea y espacios
+                isEmailValid = emailRegex.matches(it)  // Validar el formato de email
+            },
             shape = RoundedCornerShape(16.dp),
-            label = { Text(text = "Dirección Email") }
+            label = { Text(text = "Dirección Email") },
+            isError = !isEmailValid
         )
+        if (!isEmailValid) {
+            Text(text = "Formato de email inválido", color = MaterialTheme.colorScheme.error)
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = { password = it.replace(Regex("\\s"), "") },//Evitar saltos de linea y espacios
             shape = RoundedCornerShape(16.dp),
             label = { Text(text = "Contraseña") },
             visualTransformation = PasswordVisualTransformation()
@@ -59,7 +70,7 @@ fun RegistroScreen(onRegistrationComplete: () -> Unit, listaUsuarios: listaUsuar
 
         OutlinedTextField(
             value = confirmPassword,
-            onValueChange = { confirmPassword = it },
+            onValueChange = { confirmPassword = it.replace(Regex("\\s"), "")},//Evitar saltos de linea y espacios
             shape = RoundedCornerShape(16.dp),
             label = { Text(text = "Confirmar Contraseña") },
             visualTransformation = PasswordVisualTransformation()
@@ -68,17 +79,21 @@ fun RegistroScreen(onRegistrationComplete: () -> Unit, listaUsuarios: listaUsuar
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(onClick = {
-            if (password == confirmPassword) {
-                val users = listaUsuarios.getUserList().toMutableList()
-                if (users.none { it.email == email }) {
-                    users.add(User(email, password))
-                    listaUsuarios.saveUserList(users)
-                    onRegistrationComplete()
+            if (isEmailValid) {
+                if (password == confirmPassword) {
+                    val users = listaUsuarios.getUserList().toMutableList()
+                    if (users.none { it.email == email }) {
+                        users.add(User(email, password))
+                        listaUsuarios.saveUserList(users)
+                        onRegistrationComplete()
+                    } else {
+                        registrationError = "El usuario ya existe."
+                    }
                 } else {
-                    registrationError = "El usuario ya existe."
+                    registrationError = "Las contraseñas no coinciden."
                 }
             } else {
-                registrationError = "Las contraseñas no coinciden."
+                registrationError = "Formato de email inválido."
             }
         }) {
             Text(text = "Registrarse")

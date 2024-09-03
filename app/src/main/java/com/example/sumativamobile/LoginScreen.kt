@@ -51,14 +51,14 @@ fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit, 
         Spacer(modifier = Modifier.height(16.dp))
         
         OutlinedTextField(value = email, onValueChange ={
-            email = it
+            email = it.replace(Regex("\\s"), "")//Evista saltos de linea y espacios
         }, shape = RoundedCornerShape(16.dp),
             label ={ Text(text = "Dirección Email")} )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(value = password, onValueChange ={
-            password = it
+            password = it.replace(Regex("\\s"), "")//Evita saltos de linea y espacios
         }, shape = RoundedCornerShape(16.dp),
             label ={ Text(text = "Contraseña")}, visualTransformation = PasswordVisualTransformation())
 
