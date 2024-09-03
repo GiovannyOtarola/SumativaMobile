@@ -26,7 +26,9 @@ fun RegistroScreen(onRegistrationComplete: () -> Unit, listaUsuarios: listaUsuar
     var confirmPassword by remember { mutableStateOf("") }
     var registrationError by remember { mutableStateOf<String?>(null) }
     var isEmailValid by remember { mutableStateOf(true) }
-
+    var isEmailEmpty by remember { mutableStateOf(false) }
+    var isPasswordEmpty by remember { mutableStateOf(false) }
+    var isConfirmPasswordEmpty by remember { mutableStateOf(false) }
     // Expresión  para validar formato de email + el dominio
     val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$".toRegex()
 
@@ -47,12 +49,15 @@ fun RegistroScreen(onRegistrationComplete: () -> Unit, listaUsuarios: listaUsuar
             onValueChange = {
                 email = it.replace(Regex("\\s"), "")// Evitar saltos de linea y espacios
                 isEmailValid = emailRegex.matches(it)  // Validar el formato de email
+                isEmailEmpty = email.isBlank()  // Verificar si está vacío
             },
             shape = RoundedCornerShape(16.dp),
             label = { Text(text = "Dirección Email") },
-            isError = !isEmailValid
+            isError = !isEmailValid || isEmailEmpty
         )
-        if (!isEmailValid) {
+        if (isEmailEmpty) {
+            Text(text = "El campo de email no puede estar vacío", color = MaterialTheme.colorScheme.error)
+        } else if (!isEmailValid) {
             Text(text = "Formato de email inválido", color = MaterialTheme.colorScheme.error)
         }
 
@@ -60,26 +65,43 @@ fun RegistroScreen(onRegistrationComplete: () -> Unit, listaUsuarios: listaUsuar
 
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it.replace(Regex("\\s"), "") },//Evitar saltos de linea y espacios
+            onValueChange = {
+                password = it.replace(Regex("\\s"), "")//Evitar saltos de linea y espacios
+                isPasswordEmpty = password.isBlank()},
             shape = RoundedCornerShape(16.dp),
             label = { Text(text = "Contraseña") },
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation(),
+            isError = isPasswordEmpty
         )
+        if (isPasswordEmpty) {
+            Text(text = "El campo no puede estar vacío", color = MaterialTheme.colorScheme.error)
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = confirmPassword,
-            onValueChange = { confirmPassword = it.replace(Regex("\\s"), "")},//Evitar saltos de linea y espacios
+            onValueChange = {
+                confirmPassword = it.replace(Regex("\\s"), "")//Evitar saltos de linea y espacios
+                isConfirmPasswordEmpty = confirmPassword.isBlank()},
             shape = RoundedCornerShape(16.dp),
             label = { Text(text = "Confirmar Contraseña") },
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation(),
+            isError = isConfirmPasswordEmpty
         )
+        if (isConfirmPasswordEmpty) {
+            Text(text = "El campo no puede estar vacío", color = MaterialTheme.colorScheme.error)
+        }
 
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(onClick = {
-            if (isEmailValid) {
+            // Verifica si los campos están en blanco
+            isEmailEmpty = email.isBlank()
+            isPasswordEmpty = password.isBlank()
+            isConfirmPasswordEmpty = confirmPassword.isBlank()
+
+            if (!isEmailEmpty && isEmailValid && !isPasswordEmpty && !isConfirmPasswordEmpty) {
                 if (password == confirmPassword) {
                     val users = listaUsuarios.getUserList().toMutableList()
                     if (users.none { it.email == email }) {
@@ -92,8 +114,6 @@ fun RegistroScreen(onRegistrationComplete: () -> Unit, listaUsuarios: listaUsuar
                 } else {
                     registrationError = "Las contraseñas no coinciden."
                 }
-            } else {
-                registrationError = "Formato de email inválido."
             }
         }) {
             Text(text = "Registrarse")

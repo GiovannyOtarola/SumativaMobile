@@ -32,6 +32,8 @@ fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit, 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var loginError by remember { mutableStateOf<String?>(null) }
+    var isEmailEmpty by remember { mutableStateOf(false) }
+    var isPasswordEmpty by remember { mutableStateOf(false) }
 
     Column (
         modifier = Modifier.fillMaxSize(),
@@ -52,15 +54,25 @@ fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit, 
         
         OutlinedTextField(value = email, onValueChange ={
             email = it.replace(Regex("\\s"), "")//Evista saltos de linea y espacios
-        }, shape = RoundedCornerShape(16.dp),
+            isEmailEmpty = email.isBlank()}, //Verifica si campo esta vacio
+            shape = RoundedCornerShape(16.dp),
             label ={ Text(text = "Dirección Email")} )
+
+        if (isEmailEmpty) {
+            Text(text = "El campo de email no puede estar vacío", color = MaterialTheme.colorScheme.error)
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(value = password, onValueChange ={
             password = it.replace(Regex("\\s"), "")//Evita saltos de linea y espacios
-        }, shape = RoundedCornerShape(16.dp),
+            isPasswordEmpty = password.isBlank()},//Verifica si campo esta vacio
+            shape = RoundedCornerShape(16.dp),
             label ={ Text(text = "Contraseña")}, visualTransformation = PasswordVisualTransformation())
+
+        if (isPasswordEmpty) {
+            Text(text = "El campo de contraseña no puede estar vacía", color = MaterialTheme.colorScheme.error)
+        }
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -69,13 +81,18 @@ fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit, 
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Button(onClick = {
-                val users = listaUsuarios.getUserList()
-                val user = users.find { it.email == email && it.password == password }
-                if (user != null) {
-                    loginError = null
-                    navController.navigate("principal")
-                } else {
-                    loginError = "Credenciales incorrectas. Intenta nuevamente."
+                isEmailEmpty = email.isBlank()
+                isPasswordEmpty = password.isBlank()
+
+                if (!isEmailEmpty && !isPasswordEmpty) {
+                    val users = listaUsuarios.getUserList()
+                    val user = users.find { it.email == email && it.password == password }
+                    if (user != null) {
+                        loginError = null
+                        navController.navigate("principal")
+                    } else {
+                        loginError = "Credenciales incorrectas. Intenta nuevamente."
+                    }
                 }
             }) {
                 Text(text = "Iniciar Sesión")
