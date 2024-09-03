@@ -44,8 +44,12 @@ class MainActivity : ComponentActivity() {
                     composable("recuperar") {
                         Recuperar(context = this@MainActivity)
                     }
-                    composable("principal") {
-                        Principal(listaUsuarios = listaUsuarios)
+                    composable("principal/{loggedInEmail}") { backStackEntry ->
+                        val loggedInEmail = backStackEntry.arguments?.getString("loggedInEmail") ?: ""
+                        Principal(
+                            listaUsuarios = listaUsuarios,
+                            loggedInEmail = loggedInEmail
+                        )
                     }
                 }
             }

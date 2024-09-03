@@ -89,7 +89,7 @@ fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit, 
                     val user = users.find { it.email == email && it.password == password }
                     if (user != null) {
                         loginError = null
-                        navController.navigate("principal")
+                        navController.navigate("principal/$email")
                     } else {
                         loginError = "Credenciales incorrectas. Intenta nuevamente."
                     }
