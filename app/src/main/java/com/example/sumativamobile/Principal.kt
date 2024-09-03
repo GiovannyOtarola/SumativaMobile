@@ -34,6 +34,7 @@ fun Principal(listaUsuarios: listaUsuarios,loggedInEmail: String) {
             .background(gradientBrush)
             .padding(16.dp)
     )
+
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.Top,
@@ -70,7 +71,7 @@ fun Principal(listaUsuarios: listaUsuarios,loggedInEmail: String) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Tabla de usuarios registrados
-        LazyColumn {
+        /*LazyColumn {
             item {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(text = "Email", fontWeight = FontWeight.Bold)
@@ -82,6 +83,18 @@ fun Principal(listaUsuarios: listaUsuarios,loggedInEmail: String) {
                     Text(text = user.email)
                     Text(text = user.password)
                 }
+            }
+        }*/
+        //usando for para listar usuarios
+        for (user in users) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = user.email)
+                Text(text = user.password)
             }
         }
     }
