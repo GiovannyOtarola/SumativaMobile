@@ -57,7 +57,7 @@ fun CalcularImc(loggedInEmail: String) {
         ) {
             // Imagen de avatar
             Image(
-                painter = painterResource(id = R.drawable.avatar), // Asegúrate de tener la imagen en los recursos
+                painter = painterResource(id = R.drawable.avatar),
                 contentDescription = "Avatar",
                 modifier = Modifier
                     .size(100.dp)
