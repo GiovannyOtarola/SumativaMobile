@@ -48,6 +48,13 @@ class MainActivity : ComponentActivity() {
                         val loggedInEmail = backStackEntry.arguments?.getString("loggedInEmail") ?: ""
                         Principal(
                             listaUsuarios = listaUsuarios,
+                            loggedInEmail = loggedInEmail,
+                            navController = navController
+                        )
+                    }
+                    composable("calcularimc/{loggedInEmail}"){backStackEntry ->
+                        val loggedInEmail = backStackEntry.arguments?.getString("loggedInEmail") ?: ""
+                        CalcularImc(
                             loggedInEmail = loggedInEmail
                         )
                     }

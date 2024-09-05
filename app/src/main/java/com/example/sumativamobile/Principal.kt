@@ -16,9 +16,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavController
+
 
 @Composable
-fun Principal(listaUsuarios: listaUsuarios,loggedInEmail: String) {
+fun Principal(navController: NavController, listaUsuarios: listaUsuarios, loggedInEmail: String) {
     val users = listaUsuarios.getUserList()
 
     // degradado de fondo
@@ -97,5 +99,16 @@ fun Principal(listaUsuarios: listaUsuarios,loggedInEmail: String) {
                 Text(text = user.password)
             }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Botón para navegar a la pantalla CalcularImp
+        Button(onClick = {
+            // Navegación a la pantalla CalcularImp
+            navController.navigate("calcularImc/$loggedInEmail")
+        }) {
+            Text(text = "Calcular IMC")
+        }
+
     }
 }
