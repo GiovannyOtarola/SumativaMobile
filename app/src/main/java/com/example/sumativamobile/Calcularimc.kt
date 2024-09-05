@@ -15,6 +15,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,12 +40,25 @@ fun CalcularImc(loggedInEmail: String) {
     var altura by remember { mutableStateOf("") }
     var imc by remember { mutableStateOf<Double?>(null) }
 
-    // degradado de fondo
-    val gradientBrush = Brush.verticalGradient(
-        colors = listOf(Color.White, Color(0xFFB2DFDB)), // Degradado blanco a verde claro
-        startY = 0f,
-        endY = Float.POSITIVE_INFINITY
-    )
+
+    //Determinar rango de IMC
+    fun obtenerRangoImc(imc: Double): String{
+        return when{
+            imc < 18.5 -> "Bajo peso"
+            imc in 18.5..24.9 -> "Peso normal"
+            imc in 25.0..29.9 -> "Sobrepeso"
+            imc >= 30.0 -> "Obesidad"
+            else -> ""
+        }
+    }
+
+    // lambda para calcular IMC
+    fun calcularImc(peso: Double, altura: Double, onResult: (Double) -> Unit) {
+        if (altura > 0) {
+            val resultado = peso / (altura * altura)
+            onResult(resultado)
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -103,8 +118,10 @@ fun CalcularImc(loggedInEmail: String) {
                 val pesoDouble = peso.toDoubleOrNull()
                 val alturaDouble = altura.toDoubleOrNull()
 
-                if (pesoDouble != null && alturaDouble != null && alturaDouble > 0) {
-                    imc = pesoDouble / (alturaDouble * alturaDouble)
+                if (pesoDouble != null && alturaDouble != null) {
+                    calcularImc(pesoDouble, alturaDouble) { resultadoImc ->
+                        imc = resultadoImc
+                    }
                 }
             }) {
                 Text(text = "Calcular IMC")
@@ -112,9 +129,44 @@ fun CalcularImc(loggedInEmail: String) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Mostrar el resultado del IMC
+            // Mostrar el resultado del IMC y el rango
             imc?.let {
                 Text(text = "Tu IMC es: %.2f".format(it))
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Mostrar el rango del IMC
+                val rangoImc = obtenerRangoImc(it)
+                Text(text = rangoImc, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+
+                // Barra de progreso visualizando el IMC
+                val sliderPosition = when {
+                    it < 18.5 -> 0.2f
+                    it in 18.5..24.9 -> 0.5f
+                    it in 25.0..29.9 -> 0.75f
+                    it >= 30.0 -> 1f
+                    else -> 0f
+                }
+
+                Slider(
+                    value = sliderPosition,
+                    onValueChange = {},
+                    valueRange = 0f..1f,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp),
+                    enabled = false,
+                    colors = SliderDefaults.colors(
+                        thumbColor = Color.Transparent,
+                        activeTrackColor = when {
+                            it < 18.5 -> Color.Blue
+                            it in 18.5..24.9 -> Color.Green
+                            it in 25.0..29.9 -> Color.Yellow
+                            it >= 30.0 -> Color.Red
+                            else -> Color.Gray
+                        }
+                    )
+                )
             }
         }
     }
