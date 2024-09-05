@@ -120,13 +120,18 @@ fun RegistroScreen(onRegistrationComplete: () -> Unit, listaUsuarios: listaUsuar
 
             if (!isEmailEmpty && isEmailValid && !isPasswordEmpty && !isConfirmPasswordEmpty) {
                 if (password == confirmPassword) {
-                    val users = listaUsuarios.getUserList().toMutableList()
-                    if (users.none { it.email == email }) {
-                        users.add(User(email, password))
-                        listaUsuarios.saveUserList(users)
-                        onRegistrationComplete()
-                    } else {
-                        registrationError = "El usuario ya existe."
+                    //Uso de try/catch para manejo de errores
+                    try {
+                        val users = listaUsuarios.getUserList().toMutableList()
+                        if (users.none { it.email == email }) {
+                            users.add(User(email, password))
+                            listaUsuarios.saveUserList(users)
+                            onRegistrationComplete()
+                        } else {
+                            registrationError = "El usuario ya existe."
+                        }
+                    } catch (e: Exception) {
+                        registrationError = "Ocurrió un error al registrar el usuario: ${e.message}"
                     }
                 } else {
                     registrationError = "Las contraseñas no coinciden."

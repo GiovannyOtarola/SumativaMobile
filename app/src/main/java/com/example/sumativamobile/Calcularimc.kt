@@ -39,7 +39,7 @@ fun CalcularImc(loggedInEmail: String) {
     var peso by remember { mutableStateOf("") }
     var altura by remember { mutableStateOf("") }
     var imc by remember { mutableStateOf<Double?>(null) }
-
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     //Determinar rango de IMC
     fun obtenerRangoImc(imc: Double): String{
@@ -115,13 +115,23 @@ fun CalcularImc(loggedInEmail: String) {
 
             // Botón para calcular el IMC
             Button(onClick = {
-                val pesoDouble = peso.toDoubleOrNull()
-                val alturaDouble = altura.toDoubleOrNull()
+                try {
+                    val pesoDouble = peso.toDoubleOrNull()
+                    val alturaDouble = altura.toDoubleOrNull()
 
-                if (pesoDouble != null && alturaDouble != null) {
+                    if (pesoDouble == null || alturaDouble == null) {
+                        errorMessage = "Por favor ingrese valores válidos para peso y altura."
+                        return@Button
+                    }
+
                     calcularImc(pesoDouble, alturaDouble) { resultadoImc ->
                         imc = resultadoImc
+                        errorMessage = null // Limpiar mensaje de error si el cálculo es exitoso
                     }
+                } catch (e: NumberFormatException) {
+                    errorMessage = "Error al convertir valores. Asegurese de ingresar numeros validos."
+                } catch (e: Exception) {
+                    errorMessage = "Ocurrió un error inesperado: ${e.message}"
                 }
             }) {
                 Text(text = "Calcular IMC")
@@ -166,6 +176,15 @@ fun CalcularImc(loggedInEmail: String) {
                             else -> Color.Gray
                         }
                     )
+                )
+            }
+            // Mostrar mensaje de error
+            errorMessage?.let {
+                Text(
+                    text = it,
+                    color = Color.Red,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
