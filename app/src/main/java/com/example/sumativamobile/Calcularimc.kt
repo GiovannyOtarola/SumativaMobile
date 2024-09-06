@@ -1,6 +1,7 @@
 package com.example.sumativamobile
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -60,15 +61,24 @@ fun CalcularImc(loggedInEmail: String) {
         }
     }
 
+
+    // degradado de fondo
+    val gradientBrush = Brush.verticalGradient(
+        colors = listOf(Color.White, Color(0xFFB2DFDB)), // Degradado blanco a verde claro
+        startY = 0f,
+        endY = Float.POSITIVE_INFINITY
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
+            .background(gradientBrush)
+            .padding(16.dp)
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Imagen de avatar
             Image(

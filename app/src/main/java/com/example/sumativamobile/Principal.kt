@@ -68,47 +68,52 @@ fun Principal(navController: NavController, listaUsuarios: listaUsuarios, logged
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(text = "Usuarios Registrados", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        Text(text = "¿Que quieres hacer Hoy?", fontSize = 24.sp, fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Tabla de usuarios registrados
-        /*LazyColumn {
-            item {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(text = "Email", fontWeight = FontWeight.Bold)
-                    Text(text = "Contraseña", fontWeight = FontWeight.Bold)
-                }
-            }
-            items(users) { user ->
-                Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(text = user.email)
-                    Text(text = user.password)
-                }
-            }
-        }*/
-        //usando for para listar usuarios
-        for (user in users) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = user.email)
-                Text(text = user.password)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         // Botón para navegar a la pantalla CalcularImp
         Button(onClick = {
             // Navegación a la pantalla CalcularImp
             navController.navigate("calcularImc/$loggedInEmail")
-        }) {
-            Text(text = "Calcular IMC")
+        },
+            modifier =  Modifier
+                .fillMaxWidth()
+                .height(60.dp), // Aumenta la altura del botón
+            shape = RoundedCornerShape(12.dp) // Esquinas redondeadas
+            ) {
+            Text(text = "Calcular IMC", fontSize = 20.sp)
         }
 
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Botón para navegar a la pantalla Usuarios
+        Button(onClick = {
+            // Navegación a la pantalla CalcularImp
+            navController.navigate("calcularproteinas")
+        },
+            modifier =  Modifier
+                .fillMaxWidth()
+                .height(60.dp), // Aumenta la altura del botón
+            shape = RoundedCornerShape(12.dp) // Esquinas redondeadas
+        ) {
+            Text(text = "Calculadora de Proteínas", fontSize = 20.sp)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Botón para navegar a la pantalla Usuarios
+        Button(onClick = {
+            // Navegación a la pantalla CalcularImp
+            navController.navigate("Usuarios")
+        },
+            modifier =  Modifier
+                .fillMaxWidth()
+                .height(60.dp), // Aumenta la altura del botón
+            shape = RoundedCornerShape(12.dp) // Esquinas redondeadas
+            ) {
+            Text(text = "Lista Usuarios", fontSize = 20.sp)
+        }
     }
 }

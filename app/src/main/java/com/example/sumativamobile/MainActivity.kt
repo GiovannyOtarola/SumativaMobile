@@ -58,6 +58,16 @@ class MainActivity : ComponentActivity() {
                             loggedInEmail = loggedInEmail
                         )
                     }
+                    composable("usuarios"){
+                        Usuarios(
+                            listaUsuarios = listaUsuarios
+                        )
+                    }
+                    // Agregamos la nueva ruta para la vista CalcularProteinas
+                    composable("calcularproteinas") {
+                        CalcularProteinas()
+                    }
+
                 }
             }
         }
