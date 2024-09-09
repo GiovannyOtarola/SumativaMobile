@@ -44,9 +44,30 @@ class MainActivity : ComponentActivity() {
                     composable("recuperar") {
                         Recuperar(context = this@MainActivity)
                     }
-                    composable("principal") {
-                        Principal(listaUsuarios = listaUsuarios)
+                    composable("principal/{loggedInEmail}") { backStackEntry ->
+                        val loggedInEmail = backStackEntry.arguments?.getString("loggedInEmail") ?: ""
+                        Principal(
+                            listaUsuarios = listaUsuarios,
+                            loggedInEmail = loggedInEmail,
+                            navController = navController
+                        )
                     }
+                    composable("calcularimc/{loggedInEmail}"){backStackEntry ->
+                        val loggedInEmail = backStackEntry.arguments?.getString("loggedInEmail") ?: ""
+                        CalcularImc(
+                            loggedInEmail = loggedInEmail
+                        )
+                    }
+                    composable("usuarios"){
+                        Usuarios(
+                            listaUsuarios = listaUsuarios
+                        )
+                    }
+                    // Agregamos la nueva ruta para la vista CalcularProteinas
+                    composable("calcularproteinas") {
+                        CalcularProteinas()
+                    }
+
                 }
             }
         }
