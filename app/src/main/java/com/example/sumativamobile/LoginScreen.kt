@@ -2,6 +2,7 @@ package com.example.sumativamobile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,17 +23,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-
 @Composable
-fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit, listaUsuarios: listaUsuarios){
+fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit, listaUsuarios: listaUsuarios) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -42,96 +45,130 @@ fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit, 
 
     // degradado de fondo
     val gradientBrush = Brush.verticalGradient(
-        colors = listOf(Color.White, Color(0xFFB2DFDB)), // Degradado blanco a verde claro
+        colors = listOf(Color.White, Color(0xFFB2DFDB)),
         startY = 0f,
         endY = Float.POSITIVE_INFINITY
     )
+
+    // Lógica para manejar el nivel de zoom y desplazamiento
+    var zoomLevel by remember { mutableStateOf(1f) }
+    var offsetX by remember { mutableStateOf(0f) }
+    var offsetY by remember { mutableStateOf(0f) }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(gradientBrush)
-            .padding(16.dp)
-    )
+            .pointerInput(Unit) {
+                detectTransformGestures { _, pan, zoomChange, _ ->
+                    // Actualiza el nivel de zoom
+                    val newZoomLevel = (zoomLevel * zoomChange).coerceIn(1f, 3f) // Limita el zoom entre 1x y 3x
+                    zoomLevel = newZoomLevel
 
-    Column (
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Image(painter = painterResource(id = R.drawable.logo), contentDescription = "Login image",
-            modifier = Modifier.size(200.dp))
-
-        Text(text = "Bienvenido", fontSize = 28.sp, fontWeight = FontWeight.Bold)
-        
-        Spacer(modifier = Modifier.height(16.dp))
-
-        
-        Text(text = "Inicia Sesión con tu cuenta")
-
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        OutlinedTextField(value = email, onValueChange ={
-            email = it.replace(Regex("\\s"), "")//Evista saltos de linea y espacios
-            isEmailEmpty = email.isBlank()}, //Verifica si campo esta vacio
-            shape = RoundedCornerShape(16.dp),
-            label ={ Text(text = "Dirección Email")} )
-
-        if (isEmailEmpty) {
-            Text(text = "El campo de email no puede estar vacío", color = MaterialTheme.colorScheme.error)
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(value = password, onValueChange ={
-            password = it.replace(Regex("\\s"), "")//Evita saltos de linea y espacios
-            isPasswordEmpty = password.isBlank()},//Verifica si campo esta vacio
-            shape = RoundedCornerShape(16.dp),
-            label ={ Text(text = "Contraseña")}, visualTransformation = PasswordVisualTransformation())
-
-        if (isPasswordEmpty) {
-            Text(text = "El campo de contraseña no puede estar vacía", color = MaterialTheme.colorScheme.error)
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Button(onClick = {
-                isEmailEmpty = email.isBlank()
-                isPasswordEmpty = password.isBlank()
-
-                if (!isEmailEmpty && !isPasswordEmpty) {
-                    val users = listaUsuarios.getUserList()
-                    val user = users.find { it.email == email && it.password == password }
-                    if (user != null) {
-                        loginError = null
-                        navController.navigate("principal/$email")
+                    // Actualiza el desplazamiento solo si el zoom es mayor que 1
+                    if (zoomLevel > 1f) {
+                        // Actualiza los offsets con el pan
+                        offsetX += pan.x
+                        offsetY += pan.y
                     } else {
-                        loginError = "Credenciales incorrectas. Intenta nuevamente."
+                        // Restablece los offsets a 0 cuando el zoom es 1
+                        offsetX = 0f
+                        offsetY = 0f
                     }
                 }
-            }) {
-                Text(text = "Iniciar Sesión")
             }
+            .graphicsLayer(
+                scaleX = zoomLevel,
+                scaleY = zoomLevel,
+                translationX = offsetX,
+                translationY = offsetY
+            )
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Login image",
+                modifier = Modifier.size(200.dp)
+            )
 
-            Button(onClick = { onNavigateToRegister() }) {
-                Text(text = "Registrate")
-            }
-        }
+            Text(text = "Bienvenido", fontSize = 28.sp, fontWeight = FontWeight.Bold)
 
-        loginError?.let {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = it, color = MaterialTheme.colorScheme.error)
+
+            Text(text = "Inicia Sesión con tu cuenta")
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(value = email, onValueChange = {
+                email = it.replace(Regex("\\s"), "")
+                isEmailEmpty = email.isBlank()
+            }, shape = RoundedCornerShape(16.dp), label = { Text(text = "Dirección Email") })
+
+            if (isEmailEmpty) {
+                Text(text = "El campo de email no puede estar vacío", color = MaterialTheme.colorScheme.error)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(value = password, onValueChange = {
+                password = it.replace(Regex("\\s"), "")
+                isPasswordEmpty = password.isBlank()
+            }, shape = RoundedCornerShape(16.dp), label = { Text(text = "Contraseña") }, visualTransformation = PasswordVisualTransformation())
+
+            if (isPasswordEmpty) {
+                Text(text = "El campo de contraseña no puede estar vacía", color = MaterialTheme.colorScheme.error)
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Button(onClick = {
+                    isEmailEmpty = email.isBlank()
+                    isPasswordEmpty = password.isBlank()
+
+                    if (!isEmailEmpty && !isPasswordEmpty) {
+                        val users = listaUsuarios.getUserList()
+                        val user = users.find { it.email == email && it.password == password }
+                        if (user != null) {
+                            loginError = null
+                            navController.navigate("principal/$email")
+                        } else {
+                            loginError = "Credenciales incorrectas. Intenta nuevamente."
+                        }
+                    }
+                }) {
+                    Text(text = "Iniciar Sesión")
+                }
+
+                Button(onClick = { onNavigateToRegister() }) {
+                    Text(text = "Registrate")
+                }
+            }
+
+            loginError?.let {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = it, color = MaterialTheme.colorScheme.error)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            TextButton(onClick = { navController.navigate("recuperar") }) {
+                Text(text = "Olvidaste tu Contraseña?")
+            }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        TextButton(onClick = {navController.navigate("recuperar") }) {
-            Text(text = "Olvidaste tu Contraseña?")
-        }
+        // Widget de zoom
+        Widgetzoom(
+            onZoomChanged = { newZoomLevel ->
+                zoomLevel = 1f + (newZoomLevel / 100)
+            }
+        )
     }
-
 }
