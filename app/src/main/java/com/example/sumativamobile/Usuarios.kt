@@ -1,5 +1,6 @@
 package com.example.sumativamobile
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,27 +13,44 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
-
 @Composable
-fun Usuarios( listaUsuarios: listaUsuarios) {
-    val users = listaUsuarios.getUserList()
+fun Usuarios(usuarioRepository: UsuarioRepository,navController: NavController) {
+    // Estado para almacenar la lista de usuarios
+    val users = remember { mutableStateOf<List<Usuario>>(emptyList()) }
+    val isLoading = remember { mutableStateOf(true) }
+    val context = LocalContext.current
 
-    // degradado de fondo
+    // Recuperar usuarios desde Firestore
+    LaunchedEffect(Unit) {
+        usuarioRepository.obtenerTodosUsuarios { usuarioList ->
+            users.value = usuarioList
+            isLoading.value = false
+        }
+    }
+
+    // Degradado de fondo
     val gradientBrush = Brush.verticalGradient(
         colors = listOf(Color.White, Color(0xFFB2DFDB)), // Degradado blanco a verde claro
         startY = 0f,
@@ -44,35 +62,80 @@ fun Usuarios( listaUsuarios: listaUsuarios) {
             .fillMaxSize()
             .background(gradientBrush)
             .padding(16.dp)
-    )
-
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = "Usuarios Registrados", fontSize = 20.sp, fontWeight = FontWeight.Bold)
 
+            Spacer(modifier = Modifier.height(16.dp))
 
+            // Mostrar indicador de carga mientras se obtienen los usuarios
+            if (isLoading.value) {
+                CircularProgressIndicator()
+            } else {
+                // Usar LazyColumn para listas
+                LazyColumn {
+                    items(users.value) { user ->
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                Text(text = "Email: ${user.email}", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(text = "Contraseña: ${user.password}", fontSize = 16.sp) // Considera no mostrar la contraseña
 
-        Text(text = "Usuarios Registrados", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
+                                // Botones para editar y eliminar
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceEvenly
+                                ) {
+                                    Button(
+                                        onClick = {
+                                            /// Navegar a la pantalla de edición
+                                            navController.navigate("EditarUsuarioScreen/${user.id}")
+                                        },
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(end = 4.dp) // Espaciado entre botones
+                                    ) {
+                                        Text(text = "Editar")
+                                    }
 
-        // Lista de usuarios usando un bucle for y Card
-        for (user in users) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(16.dp)
-                ) {
-                    Text(text = "Email: ${user.email}", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = "Contraseña: ${user.password}", fontSize = 16.sp)
+                                    Button(
+                                        onClick = {
+                                            // Acción para eliminar el usuario
+                                            usuarioRepository.eliminarUsuario(user.id!!) { success ->
+                                                if (success) {
+                                                    // Actualiza la lista de usuarios después de eliminar
+                                                    usuarioRepository.obtenerTodosUsuarios { updatedUserList ->
+                                                        users.value = updatedUserList
+                                                    }
+                                                } else {
+                                                    // Manejo de errores
+                                                    Toast.makeText(context, "Error al eliminar el usuario", Toast.LENGTH_SHORT).show()
+                                                }
+                                            }
+                                        },
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(start = 4.dp) // Espaciado entre botones
+                                    ) {
+                                        Text(text = "Eliminar")
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

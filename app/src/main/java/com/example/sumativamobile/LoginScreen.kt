@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -23,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -34,14 +32,17 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.sumativamobile.UsuarioRepository
+
 @Composable
-fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit, listaUsuarios: listaUsuarios) {
+fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var loginError by remember { mutableStateOf<String?>(null) }
     var isEmailEmpty by remember { mutableStateOf(false) }
     var isPasswordEmpty by remember { mutableStateOf(false) }
+    val usuarioRepository = UsuarioRepository() // Crea una instancia del repositorio
 
     // degradado de fondo
     val gradientBrush = Brush.verticalGradient(
@@ -134,13 +135,13 @@ fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit, 
                     isPasswordEmpty = password.isBlank()
 
                     if (!isEmailEmpty && !isPasswordEmpty) {
-                        val users = listaUsuarios.getUserList()
-                        val user = users.find { it.email == email && it.password == password }
-                        if (user != null) {
-                            loginError = null
-                            navController.navigate("principal/$email")
-                        } else {
-                            loginError = "Credenciales incorrectas. Intenta nuevamente."
+                        usuarioRepository.obtenerUsuarioPorEmailYContrasena(email, password) { user ->
+                            if (user != null) {
+                                loginError = null
+                                navController.navigate("principal/$email")
+                            } else {
+                                loginError = "Credenciales incorrectas. Intenta nuevamente."
+                            }
                         }
                     }
                 }) {

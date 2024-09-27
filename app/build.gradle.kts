@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    // Add the Google services Gradle plugin
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -73,5 +76,13 @@ dependencies {
 
         implementation("androidx.navigation:navigation-compose:$nav_version")
     }
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+
+
+    // TODO: Add the dependencies for Firebase products you want to use
+    // When using the BoM, don't specify versions in Firebase dependencies
+    implementation("com.google.firebase:firebase-analytics")
+
 
 }
