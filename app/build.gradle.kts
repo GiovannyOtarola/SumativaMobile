@@ -84,5 +84,18 @@ dependencies {
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation("com.google.firebase:firebase-analytics")
 
+    //JUnit para pruebas unitarias
+    testImplementation (libs.junit)
+
+    //Mockitos core
+    testImplementation (libs.mockito.core)
+
+    //Mockito kotlin
+    testImplementation(libs.mockito.kotlin)
+
+    //Pruebas instrumentadas con JUnit4 para compose
+    androidTestImplementation(libs.androidx.junit.v121)
+
+    testImplementation(libs.mockito.inline)
 
 }

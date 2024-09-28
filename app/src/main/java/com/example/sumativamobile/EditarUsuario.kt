@@ -2,6 +2,7 @@ package com.example.sumativamobile
 
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.Composable
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -50,20 +52,25 @@ fun EditarUsuarioScreen(usuarioId: String, usuarioRepository: UsuarioRepository,
     } else if (userNotFound) {
         Text(text = "Usuario no encontrado", color = Color.Red) // Mensaje de usuario no encontrado
     } else {
-        Column(modifier = Modifier.padding(16.dp)) {
+
+        Column(modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally) {
             TextField(
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth()
+
             )
 
             TextField(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Contraseña") },
-                modifier = Modifier.fillMaxWidth()
+
             )
+
+            Spacer(modifier = Modifier.height(32.dp))
 
             Button(onClick = {
                 // Actualizar el usuario
