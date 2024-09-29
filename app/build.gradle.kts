@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    // Add the Google services Gradle plugin
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -73,5 +76,26 @@ dependencies {
 
         implementation("androidx.navigation:navigation-compose:$nav_version")
     }
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+
+
+    // TODO: Add the dependencies for Firebase products you want to use
+    // When using the BoM, don't specify versions in Firebase dependencies
+    implementation("com.google.firebase:firebase-analytics")
+
+    //JUnit para pruebas unitarias
+    testImplementation (libs.junit)
+
+    //Mockitos core
+    testImplementation (libs.mockito.core)
+
+    //Mockito kotlin
+    testImplementation(libs.mockito.kotlin)
+
+    //Pruebas instrumentadas con JUnit4 para compose
+    androidTestImplementation(libs.androidx.junit.v121)
+
+    testImplementation(libs.mockito.inline)
 
 }

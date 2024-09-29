@@ -11,7 +11,7 @@ class listaUsuarios(context: Context) {
     private val gson = Gson()
 
     // Guardar la lista de usuarios como JSON
-    fun saveUserList(users: List<User>) {
+    fun saveUserList(users: List<Usuario>) {
         val json = gson.toJson(users)
         sharedPreferences.edit().apply {
             putString("USER_LIST", json)
@@ -20,9 +20,9 @@ class listaUsuarios(context: Context) {
     }
 
     // Obtener la lista de usuarios como JSON
-    fun getUserList(): List<User> {
+    fun getUserList(): List<Usuario> {
         val json = sharedPreferences.getString("USER_LIST", null) ?: return emptyList()
-        val type = object : TypeToken<List<User>>() {}.type
+        val type = object : TypeToken<List<Usuario>>() {}.type
         return gson.fromJson(json, type)
     }
 

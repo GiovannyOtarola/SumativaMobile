@@ -20,11 +20,11 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun Recuperar(context: Context) {
     var email by remember { mutableStateOf("") }
-    val userManager = listaUsuarios(context)
+    val usuarioRepository = UsuarioRepository()
 
-    // degradado de fondo
+    // Degradado de fondo
     val gradientBrush = Brush.verticalGradient(
-        colors = listOf(Color.White, Color(0xFFB2DFDB)), // Degradado blanco a verde claro
+        colors = listOf(Color.White, Color(0xFFB2DFDB)),
         startY = 0f,
         endY = Float.POSITIVE_INFINITY
     )
@@ -34,38 +34,44 @@ fun Recuperar(context: Context) {
             .fillMaxSize()
             .background(gradientBrush)
             .padding(16.dp)
-    )
-
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(painter = painterResource(id = R.drawable.recuperar), contentDescription = "Recuperar image",
-            modifier = Modifier.size(200.dp))
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.recuperar),
+                contentDescription = "Recuperar image",
+                modifier = Modifier.size(200.dp)
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Text(text = "Recuperar Contraseña", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+            Text(text = "Recuperar Contraseña", fontSize = 28.sp, fontWeight = FontWeight.Bold)
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            shape = RoundedCornerShape(16.dp),
-            label = { Text("Dirección Email") }
-        )
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                shape = RoundedCornerShape(16.dp),
+                label = { Text("Dirección Email") }
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = {
-            val users = userManager.getUserList()
-            val user = users.find { it.email == email }
-            val password = user?.password ?: "No se encontró el usuario"
-            Toast.makeText(context, "Contraseña: $password", Toast.LENGTH_LONG).show()
-        }) {
-            Text(text = "Mostrar Contraseña")
+            Button(onClick = {
+                usuarioRepository.obtenerUsuarioPorEmail(email) { user ->
+                    if (user != null) {
+                        Toast.makeText(context, "Contraseña: ${user.password}", Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(context, "No se encontró un usuario con ese email.", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }) {
+                Text(text = "Mostrar Contraseña")
+            }
         }
     }
 }
