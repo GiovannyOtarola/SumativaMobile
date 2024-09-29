@@ -51,7 +51,7 @@ fun LoginScreen(navController: NavController, onNavigateToRegister: () -> Unit) 
         endY = Float.POSITIVE_INFINITY
     )
 
-    // Lógica para manejar el nivel de zoom y desplazamiento
+    // LOgica para manejar el nivel de zoom y desplazamiento
     var zoomLevel by remember { mutableStateOf(1f) }
     var offsetX by remember { mutableStateOf(0f) }
     var offsetY by remember { mutableStateOf(0f) }

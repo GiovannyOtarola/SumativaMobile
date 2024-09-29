@@ -70,7 +70,6 @@ fun CalcularProteinas( ) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo de entrada para el peso
             OutlinedTextField(
                 value = peso,
                 onValueChange = { peso = it },
@@ -81,7 +80,6 @@ fun CalcularProteinas( ) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo de selección para el nivel de actividad
             OutlinedTextField(
                 value = actividad,
                 onValueChange = { actividad = it },
@@ -91,7 +89,6 @@ fun CalcularProteinas( ) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón para calcular
             Button(
                 onClick = {
                     try {
@@ -113,7 +110,6 @@ fun CalcularProteinas( ) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Mostrar el resultado de la cantidad de proteínas
             if (proteinas > 0) {
                 Text(
                     text = "Necesitas consumir $proteinas gramos de proteínas al día.",
@@ -122,7 +118,6 @@ fun CalcularProteinas( ) {
                 )
             }
 
-            // Mostrar mensaje de error si lo hay
             if (errorMessage.isNotEmpty()) {
                 Text(
                     text = errorMessage,

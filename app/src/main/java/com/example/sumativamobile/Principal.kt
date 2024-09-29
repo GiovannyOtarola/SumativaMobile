@@ -37,7 +37,7 @@ fun Principal(navController: NavController, listaUsuarios: listaUsuarios, logged
         endY = Float.POSITIVE_INFINITY
     )
 
-    // Lógica para manejar el nivel de zoom y desplazamiento
+    // LOgica para manejar el nivel de zoom y desplazamiento
     var zoomLevel by remember { mutableStateOf(1f) }
     var offsetX by remember { mutableStateOf(0f) }
     var offsetY by remember { mutableStateOf(0f) }
@@ -107,15 +107,12 @@ fun Principal(navController: NavController, listaUsuarios: listaUsuarios, logged
 
             Spacer(modifier = Modifier.height(16.dp))
 
-
-            // Botón para navegar a la pantalla CalcularImp
             Button(onClick = {
-                // Navegación a la pantalla CalcularImp
                 navController.navigate("calcularImc/$loggedInEmail")
             },
                 modifier =  Modifier
                     .fillMaxWidth()
-                    .height(60.dp), // Aumenta la altura del botón
+                    .height(60.dp),
                 shape = RoundedCornerShape(12.dp) // Esquinas redondeadas
             ) {
                 Text(text = "Calcular IMC", fontSize = 20.sp)
@@ -123,14 +120,12 @@ fun Principal(navController: NavController, listaUsuarios: listaUsuarios, logged
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón para navegar a la pantalla Usuarios
             Button(onClick = {
-                // Navegación a la pantalla CalcularImp
                 navController.navigate("calcularproteinas")
             },
                 modifier =  Modifier
                     .fillMaxWidth()
-                    .height(60.dp), // Aumenta la altura del botón
+                    .height(60.dp),
                 shape = RoundedCornerShape(12.dp) // Esquinas redondeadas
             ) {
                 Text(text = "Calculadora de Proteínas", fontSize = 20.sp)
@@ -138,15 +133,13 @@ fun Principal(navController: NavController, listaUsuarios: listaUsuarios, logged
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón para navegar a la pantalla Usuarios
             Button(onClick = {
-                // Navegación a la pantalla CalcularImp
                 navController.navigate("Usuarios")
             },
                 modifier =  Modifier
                     .fillMaxWidth()
-                    .height(60.dp), // Aumenta la altura del botón
-                shape = RoundedCornerShape(12.dp) // Esquinas redondeadas
+                    .height(60.dp),
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Text(text = "Lista Usuarios", fontSize = 20.sp)
             }

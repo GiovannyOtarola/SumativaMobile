@@ -42,7 +42,7 @@ fun Usuarios(usuarioRepository: UsuarioRepository,navController: NavController) 
     val isLoading = remember { mutableStateOf(true) }
     val context = LocalContext.current
 
-    // Recuperar usuarios desde Firestore
+    // Recupera usuarios desde Firestore
     LaunchedEffect(Unit) {
         usuarioRepository.obtenerTodosUsuarios { usuarioList ->
             users.value = usuarioList
@@ -52,7 +52,7 @@ fun Usuarios(usuarioRepository: UsuarioRepository,navController: NavController) 
 
     // Degradado de fondo
     val gradientBrush = Brush.verticalGradient(
-        colors = listOf(Color.White, Color(0xFFB2DFDB)), // Degradado blanco a verde claro
+        colors = listOf(Color.White, Color(0xFFB2DFDB)),
         startY = 0f,
         endY = Float.POSITIVE_INFINITY
     )
@@ -72,11 +72,10 @@ fun Usuarios(usuarioRepository: UsuarioRepository,navController: NavController) 
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Mostrar indicador de carga mientras se obtienen los usuarios
+            //indicador de carga mientras se obtienen los usuarios
             if (isLoading.value) {
                 CircularProgressIndicator()
             } else {
-                // Usar LazyColumn para listas
                 LazyColumn {
                     items(users.value) { user ->
                         Card(
@@ -90,18 +89,16 @@ fun Usuarios(usuarioRepository: UsuarioRepository,navController: NavController) 
                             ) {
                                 Text(text = "Email: ${user.email}", fontWeight = FontWeight.Bold, fontSize = 18.sp)
                                 Spacer(modifier = Modifier.height(4.dp))
-                                Text(text = "Contraseña: ${user.password}", fontSize = 16.sp) // Considera no mostrar la contraseña
+                                Text(text = "Contraseña: ${user.password}", fontSize = 16.sp)
 
                                 Spacer(modifier = Modifier.height(8.dp))
 
-                                // Botones para editar y eliminar
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceEvenly
                                 ) {
                                     Button(
                                         onClick = {
-                                            /// Navegar a la pantalla de edición
                                             navController.navigate("EditarUsuarioScreen/${user.id}")
                                         },
                                         modifier = Modifier
@@ -116,19 +113,18 @@ fun Usuarios(usuarioRepository: UsuarioRepository,navController: NavController) 
                                             // Acción para eliminar el usuario
                                             usuarioRepository.eliminarUsuario(user.id!!) { success ->
                                                 if (success) {
-                                                    // Actualiza la lista de usuarios después de eliminar
+                                                    // Actualiza la lista de usuarios despuEs de eliminar
                                                     usuarioRepository.obtenerTodosUsuarios { updatedUserList ->
                                                         users.value = updatedUserList
                                                     }
                                                 } else {
-                                                    // Manejo de errores
                                                     Toast.makeText(context, "Error al eliminar el usuario", Toast.LENGTH_SHORT).show()
                                                 }
                                             }
                                         },
                                         modifier = Modifier
                                             .weight(1f)
-                                            .padding(start = 4.dp) // Espaciado entre botones
+                                            .padding(start = 4.dp)
                                     ) {
                                         Text(text = "Eliminar")
                                     }

@@ -7,10 +7,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class UsuarioRepository {
     private val db = FirebaseFirestore.getInstance()
-    private val usersRef = db.collection("usuarios") // Cambia a la colección de usuarios
+    private val usersRef = db.collection("usuarios")
 
     fun crearUsuario(usuario: Usuario, onComplete: (Boolean) -> Unit) {
-        // Genera un ID único para el usuario
+        // Genera un ID Unico para el usuario
         val userId = db.collection("usuarios").document().id
         usuario.id = userId // Asigna el ID al usuario
 
@@ -26,12 +26,10 @@ class UsuarioRepository {
         usersRef.document(userId).get().addOnCompleteListener { task ->
             if (task.isSuccessful && task.result != null) {
                 val document = task.result
-                // Obtener los campos manualmente
                 val usuario = Usuario(
                     id = document.id,
                     email = document.getString("email"),
                     password = document.getString("password")
-                    // Agrega otros campos según sea necesario
                 )
                 onComplete(usuario)
             } else {
@@ -60,12 +58,10 @@ class UsuarioRepository {
             if (task.isSuccessful) {
                 val usuarios = mutableListOf<Usuario>()
                 task.result?.forEach { document ->
-                    // Obtener los campos manualmente
                     val usuario = Usuario(
                         id = document.id,
                         email = document.getString("email"),
                         password = document.getString("password")
-                        // Agrega otros campos según sea necesario
                     )
                     usuarios.add(usuario)
                 }
@@ -80,19 +76,17 @@ class UsuarioRepository {
         usersRef.whereEqualTo("email", email).get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 for (document in task.result!!) {
-                    // Obtener los campos manualmente
                     val usuario = Usuario(
                         id = document.id,
                         email = document.getString("email"),
                         password = document.getString("password")
-                        // Agrega otros campos según sea necesario
                     )
                     onComplete(usuario)
-                    return@addOnCompleteListener // Salimos del método después de encontrar al usuario
+                    return@addOnCompleteListener
                 }
-                onComplete(null) // No se encontró un usuario con ese email
+                onComplete(null)
             } else {
-                onComplete(null) // Error al ejecutar la consulta
+                onComplete(null)
             }
         }
     }
@@ -102,12 +96,10 @@ class UsuarioRepository {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful && !task.result.isEmpty) {
                     val document = task.result.documents[0]
-                    // Obtener los campos manualmente
                     val usuario = Usuario(
                         id = document.id,
                         email = document.getString("email"),
                         password = document.getString("password")
-                        // Agrega otros campos según sea necesario
                     )
                     onComplete(usuario)
                 } else {

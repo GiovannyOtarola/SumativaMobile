@@ -121,7 +121,7 @@ fun RegistroScreen(onRegistrationComplete: () -> Unit) {
                         val nuevoUsuario = Usuario(email = email, password = password)
                         usuarioRepository.crearUsuario(nuevoUsuario) { isSuccess ->
                             if (isSuccess) {
-                                onRegistrationComplete() // Navega de regreso a la pantalla de inicio de sesión
+                                onRegistrationComplete()
                             } else {
                                 registrationError = "Error al registrar el usuario."
                             }

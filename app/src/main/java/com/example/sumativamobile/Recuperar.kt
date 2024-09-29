@@ -64,7 +64,6 @@ fun Recuperar(context: Context) {
             Button(onClick = {
                 usuarioRepository.obtenerUsuarioPorEmail(email) { user ->
                     if (user != null) {
-                        // Muestra la contraseña en un Toast
                         Toast.makeText(context, "Contraseña: ${user.password}", Toast.LENGTH_LONG).show()
                     } else {
                         Toast.makeText(context, "No se encontró un usuario con ese email.", Toast.LENGTH_LONG).show()

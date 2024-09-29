@@ -1,7 +1,7 @@
 package com.example.sumativamobile
 
 data class Usuario(
-    var id: String? = null, // Este ID se generará automáticamente
+    var id: String? = null,
     var email: String?,
     var password: String?
 )

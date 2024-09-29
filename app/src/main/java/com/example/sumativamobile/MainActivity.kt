@@ -63,10 +63,9 @@ class MainActivity : ComponentActivity() {
                     composable("usuarios") {
                         Usuarios(
                             usuarioRepository = usuarioRepository,
-                            navController = navController // Pasar también el NavController
+                            navController = navController
                         )
                     }
-                    // Agregamos la nueva ruta para la vista CalcularProteinas
                     composable("calcularproteinas") {
                         CalcularProteinas()
                     }

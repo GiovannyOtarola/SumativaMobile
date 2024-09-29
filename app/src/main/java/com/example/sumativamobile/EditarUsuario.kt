@@ -33,7 +33,7 @@ fun EditarUsuarioScreen(usuarioId: String, usuarioRepository: UsuarioRepository,
     var isLoading by remember { mutableStateOf(true) }
     var userNotFound by remember { mutableStateOf(false) }
 
-    // Cargar los datos del usuario al inicio
+    // Carga los datos del usuario al inicio
     LaunchedEffect(usuarioId) {
         usuarioRepository.obtenerUsuario(usuarioId) { usuario ->
             if (usuario != null) {
@@ -73,7 +73,6 @@ fun EditarUsuarioScreen(usuarioId: String, usuarioRepository: UsuarioRepository,
             Spacer(modifier = Modifier.height(32.dp))
 
             Button(onClick = {
-                // Actualizar el usuario
                 val usuarioActualizado = Usuario(usuarioId, email, password)
                 usuarioRepository.actualizarUsuario(usuarioActualizado) { success ->
                     if (success) {
